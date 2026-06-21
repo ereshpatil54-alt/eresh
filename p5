@@ -1,0 +1,34 @@
+import math
+data = [
+    ['Sunny','Hot','No'],
+    ['Sunny','Cool','No'],
+    ['Overcast','Hot','Yes'],
+    ['Rain','Mild','Yes'],
+    ['Rain','Cool','Yes']
+]
+def H(l):
+    t=len(l); y=l.count('Yes'); n=l.count('No')
+    if y==0 or n==0: return 0
+    py=y/t; pn=n/t
+    return -py*math.log2(py)-pn*math.log2(pn)
+def IG(d,c):
+    vals=set(r[c] for r in d)
+    return H([r[-1] for r in d]) - sum(
+        (len(s)/len(d))*H([r[-1] for r in s])
+        for v in vals
+        for s in [[r for r in d if r[c]==v]]
+    )
+def id3(d,f):
+    l=[r[-1] for r in d]
+    if l.count(l[0])==len(l): return l[0]
+    if not f: return max(set(l),key=l.count)
+    b=max(range(len(f)), key=lambda i: IG(d,i))
+    t={f[b]:{}}
+    for v in set(r[b] for r in d):
+        s=[r for r in d if r[b]==v]
+        nd=[r[:b]+r[b+1:] for r in s]
+        nf=f[:b]+f[b+1:]
+        t[f[b]][v]=id3(nd,nf)
+    return t
+features=['Outlook','Temperature']
+print(id3(data,features))
