@@ -1,0 +1,40 @@
+def count_inversions(state):
+    arr = [x for x in state if x != 0]
+    inv = 0
+    for i in range(len(arr)):
+        for j in range(i + 1, len(arr)):
+            if arr[i] > arr[j]:
+                inv += 1
+    return inv
+def is_reachable(start, goal):
+    return count_inversions(start) % 2 == count_inversions(goal) % 2
+goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+states = [
+    (1, 2, 3, 4, 5, 6, 0, 7, 8),
+    (1, 2, 3, 5, 4, 6, 7, 8, 0),
+    (1, 2, 3, 4, 0, 5, 6, 7, 8)
+]
+even_set = []
+odd_set = []
+for state in states:
+    inv = count_inversions(state)
+    print("\nState:", state)
+    print("Number of Inversions:", inv)
+    if inv % 2 == 0:
+        even_set.append(state)
+        print("Belongs to EVEN set")
+    else:
+        odd_set.append(state)
+        print("Belongs to ODD set")
+    if is_reachable(state, goal):
+        print("Reachable from Goal State")
+    else:
+        print("Not Reachable from Goal State")
+print("\nGoal State:", goal)
+print("Goal Inversions:", count_inversions(goal))
+print("\nSet of EVEN states:")
+for s in even_set:
+    print(s)
+print("\nSet of ODD states:")
+for s in odd_set:
+    print(s)
