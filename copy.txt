@@ -1,0 +1,14 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import pyperclip, time
+
+o = Options()
+o.add_argument("--headless=new")
+
+d = webdriver.Chrome(options=o)
+d.get("https://dontpad.com/amd_2")
+time.sleep(2)
+
+pyperclip.copy(d.find_element(By.ID, "text").get_attribute("value"))
+d.quit()
