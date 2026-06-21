@@ -1,0 +1,27 @@
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.cluster import KMeans
+from sklearn.semi_supervised import LabelSpreading
+print("===== ML APPROACHES DEMO =====\n")
+X, y = load_iris(return_X_y=True)
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.3)
+acc = accuracy_score(yte, DecisionTreeClassifier().fit(Xtr, ytr).predict(Xte))
+print("1. Supervised Accuracy:", acc)
+kmeans = KMeans(n_clusters=3, n_init=10).fit(X)
+print("2. KMeans labels:", kmeans.labels_[:10])
+y_semi = y.copy(); y_semi[::2] = -1
+semi = LabelSpreading().fit(X, y_semi)
+print("3. Semi labels:", semi.transduction_[:10])
+Q = np.zeros((3, 2))
+for _ in range(100):
+    s = np.random.randint(3)
+    for _ in range(10):
+        a, ns = np.random.randint(2), (s + 1) % 3
+        r = int(s == 2)
+        Q[s, a] += 0.1 * (r + 0.9 * np.max(Q[ns]) - Q[s, a])
+        s = ns
+print("4. Q-Table:\n", Q)
+print("\n===== END =====")
